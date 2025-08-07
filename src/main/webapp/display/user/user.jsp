@@ -20,9 +20,41 @@
 
     <div class="text-center mt-4">
         <a href="/library/books" class="btn btn-outline-success mb-2">Xem sách trong thư viện</a><br>
-
-        <a href="/library/return" class="btn btn-outline-secondary mb-2">Trả sách</a><br>
-        <a href="/library/" class="btn btn-danger mt-3">Đăng xuất</a>
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-primary text-center">
+                <tr>
+                    <th>STT</th>
+                    <th>Tên sách</th>
+                    <th>Thể loại</th>
+                    <th>Giá</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${listbooks}" var="book" varStatus="status">
+                    <tr>
+                        <td class="text-center">${status.index + 1}</td>
+                        <td>${book.name}</td>
+                        <td>${book.genre}</td>
+                        <td>${book.price}</td>
+                        <td class="text-center">
+                            <a href="${pageContext.request.contextPath}/library/deleteB?id=${book.id}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Bạn có chắc chắn muốn xóa trả này?')">Trả
+                                <i class="bi bi-trash3-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-end mt-4">
+            <a href="${pageContext.request.contextPath}/library/logout" class="btn btn-outline-secondary">
+                <i class="bi bi-box-arrow-right"></i> Đăng xuất
+            </a>
+        </div>
     </div>
 </div>
 </body>

@@ -5,53 +5,70 @@
 <html>
 <head>
     <title>Danh sách sách</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
 <div class="container mt-5">
-    <h3 class="text-success mb-4">📚 Danh sách sách</h3>
+    <div class="card shadow">
+        <div class="card-header bg-success text-white text-center">
+            <h4 class="mb-0"><i class="bi bi-journal-bookmark-fill"></i> Danh sách sách</h4>
+        </div>
 
-    <a href="/library/addbook" class="btn btn-outline-info mb-3">+ Thêm sách</a>
-
-    <table class="table table-bordered table-striped">
-        <thead class="table-light">
-        <tr>
-            <th>STT</th>
-            <th>Tên sách</th>
-            <th>Thể loại</th>
-            <th>Giá</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:choose>
-            <c:when test="${not empty requestScope.listbooks}">
-                <c:forEach items="${requestScope.listbooks}" var="book" varStatus="status">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle text-center">
+                    <thead class="table-success">
                     <tr>
-                        <td>${status.index + 1}</td>
-                        <td>${book.name}</td>
-                        <td>${book.genre}</td>
-                        <td><fmt:formatNumber value="${book.price}" type="number" groupingUsed="true"/> VNĐ</td>
-                        <td>
-                            <a href="/library/delete?id=${book.id}"
-                               class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('Bạn có chắc muốn xóa sách này?')">Xóa</a>
-                        </td>
+                        <th>STT</th>
+                        <th>Tên sách</th>
+                        <th>Thể loại</th>
+                        <th>Giá</th>
+                        <th>Hành động</th>
                     </tr>
-                </c:forEach>
-            </c:when>
-            <c:otherwise>
-                <tr>
-                    <td colspan="5" class="text-center text-danger">Không có sách nào trong danh sách.</td>
-                </tr>
-            </c:otherwise>
-        </c:choose>
-        </tbody>
-    </table>
+                    </thead>
+                    <tbody>
+                    <c:choose>
+                        <c:when test="${not empty requestScope.listbooks}">
+                            <c:forEach items="${requestScope.listbooks}" var="book" varStatus="status">
+                                <tr>
+                                    <td>${status.index + 1}</td>
+                                    <td class="text-start">${book.name}</td>
+                                    <td>${book.genre}</td>
+                                    <td><fmt:formatNumber value="${book.price}" type="number" groupingUsed="true"/> VNĐ</td>
+                                    <td>
+                                        <a href="/library/rent?id=${book.id}"
+                                           class="btn btn-sm btn-outline-primary"
+                                           onclick="return confirm('Bạn có chắc muốn thuê sách này?')">
+                                            <i class="bi bi-bag-plus-fill"></i> Thuê sách
+                                        </a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <tr>
+                                <td colspan="5" class="text-danger text-center">Không có sách nào trong danh sách.</td>
+                            </tr>
+                        </c:otherwise>
+                    </c:choose>
+                    </tbody>
+                </table>
+            </div>
 
-    <a href="/library/" class="btn btn-danger mt-3">Quay lại</a>
+            <div class="text-end mt-4">
+                <a href="${pageContext.request.contextPath}/display/user/user.jsp" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left-circle"></i> Quay lại
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

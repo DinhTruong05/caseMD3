@@ -5,6 +5,8 @@ import org.example.library.Entites.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserModel extends BaseModel{
     public boolean insertUser(User user) throws SQLException {
@@ -38,5 +40,29 @@ public class UserModel extends BaseModel{
                     rs.getString("role"));
         }
         return null;
+    }
+    public List<User> getAllUser() throws SQLException {
+        String sql = "SELECT * FROM user WHERE role != 'admin'";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        List<User> listUser = new ArrayList<>();
+        while (rs.next()){
+            int id = rs.getInt("id");
+            String username = rs.getString("username");
+            String name = rs.getString("name");
+            String email = rs.getString("email");
+            String phone = rs.getString("phone");
+            String address = rs.getString("address");
+
+            User user = new User(id,username, name, email, phone, address);
+            listUser.add(user);
+        }
+        return listUser;
+    }
+    public void deleteUserById(int id) throws SQLException {
+        String sql = "DELETE FROM user WHERE id = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.executeUpdate();
     }
 }
