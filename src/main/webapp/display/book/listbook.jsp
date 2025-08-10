@@ -2,8 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
+    <meta charset="UTF-8">
     <title>Danh sách sách</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap CSS -->
@@ -13,19 +14,23 @@
 </head>
 <body class="bg-light">
 
-<div class="container mt-5">
+<div class="container my-5">
     <div class="card shadow">
-        <div class="card-header bg-success text-white text-center">
-            <h4 class="mb-0"><i class="bi bi-journal-bookmark-fill"></i> Danh sách sách</h4>
+        <!-- Tiêu đề -->
+        <div class="card-header bg-success text-white text-center py-3">
+            <h4 class="mb-0">
+                <i class="bi bi-journal-bookmark-fill me-2"></i>Danh sách sách
+            </h4>
         </div>
 
+        <!-- Nội dung -->
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle text-center">
                     <thead class="table-success">
                     <tr>
                         <th>STT</th>
-                        <th>Tên sách</th>
+                        <th class="text-start">Tên sách</th>
                         <th>Thể loại</th>
                         <th>Giá</th>
                         <th>Hành động</th>
@@ -39,12 +44,14 @@
                                     <td>${status.index + 1}</td>
                                     <td class="text-start">${book.name}</td>
                                     <td>${book.genre}</td>
-                                    <td><fmt:formatNumber value="${book.price}" type="number" groupingUsed="true"/> VNĐ</td>
                                     <td>
-                                        <a href="/library/rent?id=${book.id}"
+                                        <fmt:formatNumber value="${book.price}" type="number" groupingUsed="true"/> VNĐ
+                                    </td>
+                                    <td>
+                                        <a href="${pageContext.request.contextPath}/library/rent?id=${book.id}"
                                            class="btn btn-sm btn-outline-primary"
                                            onclick="return confirm('Bạn có chắc muốn thuê sách này?')">
-                                            <i class="bi bi-bag-plus-fill"></i> Thuê sách
+                                            <i class="bi bi-bag-plus-fill"></i> Thuê
                                         </a>
                                     </td>
                                 </tr>
@@ -52,7 +59,9 @@
                         </c:when>
                         <c:otherwise>
                             <tr>
-                                <td colspan="5" class="text-danger text-center">Không có sách nào trong danh sách.</td>
+                                <td colspan="5" class="text-center text-danger">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> Không có sách nào trong danh sách.
+                                </td>
                             </tr>
                         </c:otherwise>
                     </c:choose>
@@ -60,7 +69,8 @@
                 </table>
             </div>
 
-            <div class="text-end mt-4">
+            <!-- Nút quay lại -->
+            <div class="text-end mt-3">
                 <a href="${pageContext.request.contextPath}/display/user/user.jsp" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left-circle"></i> Quay lại
                 </a>
@@ -69,6 +79,7 @@
     </div>
 </div>
 
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

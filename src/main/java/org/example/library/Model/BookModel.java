@@ -2,10 +2,7 @@ package org.example.library.Model;
 
 import org.example.library.Entites.Book;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,4 +43,46 @@ public class BookModel extends BaseModel{
         ps.setInt(1, id);
         ps.executeUpdate();
     }
+
+    public void addRent(int userId, int bookId) throws SQLException {
+        String sql = "INSERT INTO user_book (id_user, id_book) VALUES (?, ?)";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, userId);
+        ps.setInt(2, bookId);
+        ps.executeUpdate();
+    }
+    public List<Book> getRentBook(int userId) throws SQLException {
+        String sql = """
+                    SELECT b.id, b.name, b.genre, b.price
+                    FROM user_book ub
+                    JOIN book b ON ub.id_book = b.id
+                    WHERE ub.id_user = ?
+                """;
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, userId);
+        ResultSet rs = ps.executeQuery();
+        List<Book> listBook = new ArrayList<>();
+
+        while (rs.next()){
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            String genre = rs.getString("genre");
+            int price = rs.getInt("price");
+
+            Book book = new Book(id, name, genre, price);
+
+            listBook.add(book);
+        }
+        return listBook;
+    }
+    public void returnBook(int userId, int bookId) throws SQLException {
+        String sql = "DELETE FROM user_book WHERE id_user = ? AND id_book = ?";
+             PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, userId);
+            stmt.setInt(2, bookId);
+            stmt.executeUpdate();
+
+    }
+
+
 }

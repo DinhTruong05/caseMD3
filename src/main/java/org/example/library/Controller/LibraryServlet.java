@@ -69,6 +69,15 @@ public class LibraryServlet extends HttpServlet {
             case "/delete":
                 deleteUser(req, resp);
                 break;
+            case "/rent":
+                rentBook(req, resp);
+                break;
+            case "/return":
+                returnBook(req, resp);
+                break;
+            case "/user":
+                showRentBook(req, resp);
+                break;
 
         }
     }
@@ -158,6 +167,8 @@ public class LibraryServlet extends HttpServlet {
                 session.setAttribute("listbooks", listBook);
                 resp.sendRedirect(req.getContextPath() + "/display/user/admin.jsp");
             } else {
+                List<Book> rentedBooks = bookModel.getRentBook(user.getId());
+                session.setAttribute("rentedBooks", rentedBooks);
                 resp.sendRedirect(req.getContextPath() + "/display/user/user.jsp");
             }
         } catch (Exception e) {
@@ -270,5 +281,66 @@ public class LibraryServlet extends HttpServlet {
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void rentBook(HttpServletRequest rep, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            HttpSession session = rep.getSession(false);
+            User currentUser = (session != null) ? (User) session.getAttribute("currentUser") : null;
+            if (currentUser == null) {
+                resp.sendRedirect(rep.getContextPath() + "/library");
+                return;
+            }
+            int bookId = Integer.parseInt(rep.getParameter("id"));
+            bookModel.addRent(currentUser.getId(), bookId);
+            List<Book> rentedBooks = bookModel.getRentBook(currentUser.getId());
+            session.setAttribute("rentedBooks", rentedBooks);
+            resp.sendRedirect(rep.getContextPath() + "/display/user/user.jsp");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void returnBook(HttpServletRequest rep, HttpServletResponse resp) {
+        try {
+            HttpSession session = rep.getSession();
+            User currentUser = (User) session.getAttribute("currentUser");
+
+            if (currentUser == null || !"user".equals(currentUser.getRole())) {
+                resp.sendRedirect(rep.getContextPath() + "/library");
+                return;
+            }
+            int bookId = Integer.parseInt(rep.getParameter("id"));
+            bookModel.returnBook(currentUser.getId(), bookId);
+            List<Book> rentedBooks = bookModel.getRentBook(currentUser.getId());
+            session.setAttribute("rentedBooks", rentedBooks);
+
+            resp.sendRedirect(rep.getContextPath() + "/display/user/user.jsp");
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void showRentBook(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            HttpSession session = req.getSession();
+            User currentUser = (User) session.getAttribute("currentUser");
+            if (currentUser == null) {
+                resp.sendRedirect(req.getContextPath() + "/library/login");
+                return;
+            }
+            List<Book> rentedBooks = bookModel.getRentBook(currentUser.getId());
+            session.setAttribute("rentedBooks", rentedBooks);
+            req.setAttribute("rentedBooks", rentedBooks);
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/display/user/user.jsp");
+            dispatcher.forward(req, resp);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
